@@ -19,15 +19,14 @@
     <!-- Load our React component. -->
     <script type="text/babel">
 
-        function ConditionalRenderingComponent(props) {
-            let text= window.prompt('Syötä teksti')
+        function ConditionalRenderingComponent({ text }) {
             const maxLenght = 5;
 
             return text.length <= maxLenght ? <div>{text}</div> : <div>Liian pitkä</div>;
         }
 
         const root = ReactDOM.createRoot(document.getElementById("root"));
-        root.render(<ConditionalRenderingComponent />);
+        root.render(<ConditionalRenderingComponent text="Hello" />);
     </script>
 </body>
 
