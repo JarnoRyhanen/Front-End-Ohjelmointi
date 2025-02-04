@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Trivia</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+
+        function TriviaComponent() {
+
+            const API_URL = "https://opentdb.com/api.php?amount=1";
+
+            const [data, setData] = React.useState();
+            const [error, setError] = React.useState();
+            const [isShowAnswerClicked, setIsShowAnswerClicked] = React.useState(false);
+
+
+            const handleClick = event => {
+                fetchData();
+            }
+
+            function fetchData() {
+                setIsShowAnswerClicked(false);
+                fetch(API_URL)
+                    .then(response => {
+                        if (!response.ok) {
+                            console.log(response);
+                            setError(response.status);
+                            throw new Error(response.status)
+                        }
+                        return response.json()
+                    })
+                    .then(data => {
+                        setData(data.results[0]);
+                        console.log(data);
+                    })
+                    .catch(e => {
+                        console.log("NEW ERROR: " + e);
+                    });
+            }
+
+            React.useEffect(() => {
+                fetchData();
+            }, []);
+
+            return (
+                <React.Fragment>
+                    <p>{data != null ? data.question : "Press button to receive a new question"}</p>
+                    <button onClick={handleClick}>New question</button>
+                    <button onClick={() => setIsShowAnswerClicked(true)}>Show answer</button>
+                    <p>{isShowAnswerClicked ? "Answer: " + data.correct_answer : ""}</p>
+                    <h2
+                        style={{ color: "red" }}>
+                        {error != null ? "Error code: " + error + ", try again later!" : ""}
+                    </h2>
+
+                </React.Fragment >
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<TriviaComponent />);
+
+    </script>
+</body>
+
+</html>

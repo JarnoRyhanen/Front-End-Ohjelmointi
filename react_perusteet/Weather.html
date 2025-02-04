@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Sää</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+
+        function TriviaComponent() {
+
+            const [data, setData] = React.useState();
+            const [city, setCity] = React.useState('Helsinki');
+
+            const weatherIconUrl = data != null ? "https://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png" : null;
+            const API_URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=c2cc66051d60585506675ed51b87a67e";
+
+            const handleButtonClick = () => {
+                fetchData()
+            }
+
+            const handleChange = event => {
+                setCity(event.target.value);
+            }
+
+            function fetchData() {
+                fetch(API_URL)
+                    .then(response => {
+                        if (!response.ok) {
+                            console.log(response);
+                            throw new Error(response.status)
+                        }
+                        return response.json()
+                    })
+                    .then(data => {
+                        setData(data);
+                        console.log(data);
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    });
+            }
+
+            React.useEffect(() => {
+                fetchData();
+            }, []);
+
+            return (
+                <div style={{ backgroundColor: "lightblue", padding: "10px" }}>
+
+                    <input id="city-input" name="city" type="text" value={city} onChange={handleChange} />
+                    <button onClick={handleButtonClick}>Get weather</button>
+
+                    {data ? (
+                        <React.Fragment>
+                            <p>City: {data.name}</p>
+                            <p>Temperature: {(data.main.temp).toFixed(1)} Celsius</p>
+                            <p>Weather: {data.weather[0].description}</p>
+                            <img src={weatherIconUrl} alt="Weather icon" />
+                        </React.Fragment>
+                    ) : (
+                        <p>Loading... </p>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<TriviaComponent />);
+
+    </script>
+</body>
+
+</html>
