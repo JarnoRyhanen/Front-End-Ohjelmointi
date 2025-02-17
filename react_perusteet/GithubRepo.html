@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Github Repo</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+
+        function GithubRepoComponent() {
+
+            const [data, setData] = React.useState();
+            const [repository, setRepository] = React.useState();
+            const [loading, setLoading] = React.useState(false);
+
+            function fetchData() {
+                setLoading(true);
+                const API = "https://api.github.com/search/repositories?q=" + repository;
+                fetch(API)
+                    .then(response => response.json())
+                    .then(responseData => {
+                        setData(responseData.items);
+                    }).catch(error => console.error(error))
+                    .finally(() => setLoading(false));
+            }
+
+            const handleChange = event => {
+                setRepository(event.target.value);
+            };
+
+            const handleButtonClick = () => {
+                fetchData();
+            };
+
+            return <React.Fragment>
+                <h1>Repositories</h1>
+                <input id="repo_input" type="text" value={repository} onChange={handleChange} />
+                <button onClick={handleButtonClick}>Search</button>
+
+                {data == null ? (
+                    <h2>Please search for a repository</h2>
+                ) : loading == true ? (
+                    <h2>Loading repositories...</h2>
+                ) : (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Url</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((repo) => (
+                                <tr key={repo.id}>
+                                    <td>{repo.full_name}</td>
+                                    <td><a href={repo.html_url} target="_blank">{repo.html_url}</a></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )
+                }
+
+            </React.Fragment>
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<GithubRepoComponent />);
+
+    </script>
+</body>
+
+</html>

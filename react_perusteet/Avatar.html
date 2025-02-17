@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Avatar</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+
+        function AvatarComponent() {
+
+            const [data, setData] = React.useState([]);
+            const API = "https://reqres.in/api/users";
+
+            function fetchData() {
+                fetch(API)
+                    .then(response => {
+                        if (!response.ok)
+                            throw new Error("Error: " + response.statusText);
+
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        setData(data.data);
+                    }).catch(error => console.error(error));
+
+            };
+
+            React.useEffect(() => {
+                fetchData();
+            }, [])
+
+            return <React.Fragment>
+                <div>
+                    <h1>Persons</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Avatar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((person) => (
+                                <tr key={person.id}>
+                                    <td>{person.first_name}</td>
+                                    <td>{person.last_name}</td>
+                                    <td>{person.email}</td>
+                                    <td><img src={person.avatar}/></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                </div>
+            </React.Fragment>
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<AvatarComponent />);
+
+    </script>
+</body>
+
+</html>
