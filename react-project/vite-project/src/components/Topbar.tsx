@@ -1,6 +1,3 @@
-import React from 'react'
-
-
 const Topbar = () => {
     return (
         <div className="w-full p-10 bg-slate-900">
