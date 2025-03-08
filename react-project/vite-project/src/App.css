@@ -7,3 +7,12 @@ overflow-x: hidden;
 th, td,
 input {
 }
+
+button {
+    background-color: rgb(246, 246, 246);
+    color: black;
+    font-weight: 500;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 20%;
+    padding: 0.5rem;
+}

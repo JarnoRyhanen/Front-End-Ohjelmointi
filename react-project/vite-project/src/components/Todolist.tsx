@@ -1,51 +1,81 @@
-import React from 'react';
-import { useState } from 'react';
-import TodoTable from './TodoTable';
+import { useState, useRef } from 'react';
 import { Todo } from '../types';
+import { AgGridReact as AgGrid } from "ag-grid-react";
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { ColDef } from "ag-grid-community"
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 const Todolist = () => {
 
+    const [columnDefs] = useState<ColDef<Todo>[]>([
+        { field: "description", sortable: true, filter: true, floatingFilter: true },
+        {
+            field: "priority",
+            sortable: true,
+            filter: true,
+            floatingFilter: true,
+            cellStyle: (params) =>
+                params.value === "High" ? { color: "red" } : { color: "black" },
+        },
+        { field: "duedate", sortable: true, filter: true, floatingFilter: true },
+    ]);
+
     const [todo, setTodo] = useState<Todo>({
         description: '',
-        date: ''
+        duedate: '',
+        priority: '',
     });
+
     const [todos, setTodos] = useState<Todo[]>([]);
+    const gridRef = useRef<AgGrid<Todo>>(null);
 
     const addTodo = () => {
         setTodos([...todos, todo]);
-        setTodo({ description: "", date: "" });
+        setTodo({ description: "", duedate: "", priority: "" });
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.id == "desc") {
-            setTodo({ ...todo, description: event.target.value })
+    const handleDelete = () => {
+        if (gridRef.current?.api.getSelectedNodes().length) {
+            setTodos(todos.filter((_todo, i) => i !== Number(gridRef.current?.api.getSelectedNodes()[0].id)));
         } else {
-            setTodo({ ...todo, date: event.target.value })
+            alert("Select a row first!");
         }
-    };
-
-    const handleDelete = (row: number) => {
-        setTodos(todos.filter((_todo, i) => i !== row));
     }
 
     return (
         <>
-            <div className='bg-gray-700 mt-10 p-5 flex justify-evenly space-x-10 border-x-4 border-y-8 border-slate-900'>
-                <h2 className='text-sky-50'>Add todo</h2>
-                <input className='h-12 w-32 bg-white rounded-sm p-2 outline-offset-2 outline-sky-500 focus:outline-2' 
-                    id="desc"
-                    placeholder='Description'
-                    onChange={handleChange}
-                    value={todo.description} />
-                <input  className='h-12 w-32 bg-white rounded-sm p-2 outline-offset-2 outline-sky-500 focus:outline-2' 
-                    id='date'
-                    placeholder='Date'
-                    onChange={handleChange}
-                    value={todo.date} />
-                <button  className='h-12 w-24 bg-white rounded-3xl'  
-                onClick={addTodo}>Add</button>
+            <div className='flex flex-col p-4 m-2 w-full'>
+                <div className='mb-2 flex justify-center gap-1.5'>
+                    <input
+                        placeholder="Description"
+                        onChange={(e) => setTodo({ ...todo, description: e.target.value })}
+                        value={todo.description}
+                    />
+                    <input
+                        placeholder="Priority"
+                        onChange={(e) => setTodo({ ...todo, priority: e.target.value })}
+                        value={todo.priority}
+                    />
+                    <input
+                        placeholder="Date"
+                        type="date"
+                        onChange={(e) => setTodo({ ...todo, duedate: e.target.value })}
+                        value={todo.duedate}
+                    />
+                    <button onClick={addTodo}>Add</button>
+                    <button onClick={handleDelete}>Delete</button>
+                </div>
+                <div className='m-auto'
+                    style={{ width: 700, height: 500 }}>
+                    <AgGrid
+                        ref={gridRef}
+                        rowData={todos}
+                        columnDefs={columnDefs}
+                        rowSelection="single"
+                    />
+                </div>
             </div>
-                <TodoTable todos={todos} handleDelete={handleDelete} />
         </>
     )
 };
