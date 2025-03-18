@@ -1,14 +1,18 @@
 import { Outlet } from 'react-router-dom';
 import './App.css'
-import Todolist from './components/Todolist';
 import Topbar from './components/Topbar';
 
-function App() {
+
+
+function App({ children }: any) {
   return (
-    <div className='App'>
-      <Topbar />
-      <Outlet />
-    </div>
+ 
+      <div className='App'>
+        <Topbar />
+        {children}
+        <Outlet />
+      </div>
+
   )
 }
 

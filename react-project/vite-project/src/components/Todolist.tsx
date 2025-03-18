@@ -3,6 +3,8 @@ import { Todo } from '../types';
 import { AgGridReact as AgGrid } from "ag-grid-react";
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { ColDef } from "ag-grid-community"
+import dayjs, { Dayjs } from 'dayjs';
+import CustomDatePicker from './CustomDatePicker';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -20,6 +22,7 @@ const Todolist = () => {
         },
         { field: "duedate", sortable: true, filter: true, floatingFilter: true },
     ]);
+    const [value, setValue] = useState<Dayjs | null>(dayjs(''));
 
     const [todo, setTodo] = useState<Todo>({
         description: '',
@@ -31,8 +34,9 @@ const Todolist = () => {
     const gridRef = useRef<AgGrid<Todo>>(null);
 
     const addTodo = () => {
+        console.log(todo);
         setTodos([...todos, todo]);
-        setTodo({ description: "", duedate: "", priority: "" });
+        setTodo({ description: "", duedate: '', priority: "" });
     };
 
     const handleDelete = () => {
@@ -41,6 +45,11 @@ const Todolist = () => {
         } else {
             alert("Select a row first!");
         }
+    }
+
+    const onchangeDate = (event: Dayjs | null) => {
+        const formattedDate: string = event?.format("DD/MM/YYYY") || '';
+        setTodo({...todo, duedate: formattedDate});
     }
 
     return (
@@ -57,17 +66,14 @@ const Todolist = () => {
                         onChange={(e) => setTodo({ ...todo, priority: e.target.value })}
                         value={todo.priority}
                     />
-                    <input
-                        placeholder="Date"
-                        type="date"
-                        onChange={(e) => setTodo({ ...todo, duedate: e.target.value })}
-                        value={todo.duedate}
+                    <CustomDatePicker 
+                    value={value}
+                    onChange={onchangeDate}
                     />
                     <button onClick={addTodo}>Add</button>
                     <button onClick={handleDelete}>Delete</button>
                 </div>
-                <div className='m-auto'
-                    style={{ width: 700, height: 500 }}>
+                <div className='m-auto w-[50rem] h-[20rem] justify-center'>
                     <AgGrid
                         ref={gridRef}
                         rowData={todos}
