@@ -1,9 +1,10 @@
-import React from 'react'
-import Todolist from './Todolist';
+import CustomTab from './CustomTab';
 
 const Home = () => {
   return (
-    <Todolist />
+    <>
+      <CustomTab />
+    </>
   )
 }
 
