@@ -3,6 +3,7 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { ColDef } from "ag-grid-community";
 import { useEffect, useState } from "react";
 import { Training } from "../Types";
+import dayjs from "dayjs";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -26,7 +27,11 @@ const TrainingListView = () => {
     const [columnDefs] = useState<ColDef<Training>[]>([
         { field: "customer.firstname", headerName: "Customer First Name" },
         { field: "customer.lastname", headerName: "Customer Last Name" },
-        { field: "date", headerName: "Date", },
+        {
+            field: "date", headerName: "Date", valueFormatter: (params) => {
+                return dayjs(params.value).format("DD.MM.YYYY HH:mm")
+            }
+        },
         { field: "duration", headerName: "Duration (min)" },
         { field: "activity", headerName: "Activity" },
     ]);
