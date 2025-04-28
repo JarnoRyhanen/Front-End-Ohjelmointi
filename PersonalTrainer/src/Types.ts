@@ -47,3 +47,16 @@ export type Training = {
     };
 };
 
+export type AddTraining = {
+    date: string;
+    duration: number;
+    activity: string;
+    customer: string;
+};
+
+export type AddTrainingProps = {
+    newTraining: AddTraining;
+    setNewTraining: React.Dispatch<React.SetStateAction<AddTraining>>;
+    handleFormClose: () => void;
+    handleFormSubmit: (e: React.FormEvent) => void;
+}
