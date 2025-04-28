@@ -10,6 +10,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 const CustomerListView = () => {
     const [customerData, setCustomerData] = useState<Customer[]>([]);
     const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
+
     const [newCustomer, setNewCustomer] = useState<Customer>({
         firstname: "",
         lastname: "",
@@ -42,6 +43,16 @@ const CustomerListView = () => {
         { field: "city", headerName: "City" },
         { field: "email", headerName: "Email" },
         { field: "phone", headerName: "Phone" },
+        {
+            field: "_links.self", headerName: "DELETE",
+            cellRenderer: (params: { value: { href: string }; }) => (
+                <button className="text-red-500 font-semibold"
+                    onClick={() => handleDelete(params.value.href)}
+                >
+                    Delete
+                </button>
+            )
+        },
     ]);
 
     const handleAddCustomer = () => {
@@ -80,6 +91,29 @@ const CustomerListView = () => {
             .catch((error) => console.error(error));
     };
 
+    const handleDelete = (url: string) => {
+        console.log(url);
+
+        if (!url) {
+            console.error("Invalid URL: 'url' is empty or undefined");
+            return;
+        }
+
+        if (window.confirm("Are you sure you want to delete this customer?")) {
+            fetch(url, {
+                method: "DELETE",
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        fetchData();
+                    } else {
+                        console.error("Failed to delete customer");
+                    }
+                })
+                .catch((error) => console.error(error));
+        }
+    }
+
     return (
         <div className="p-2 m-3 shadow h-screen">
             <div className="mb-4">
@@ -97,7 +131,6 @@ const CustomerListView = () => {
                 handleFormClose={handleFormClose}
                 handleFormSubmit={handleFormSubmit}
             />}
-
             <AgGridReact className="z-10"
                 rowData={customerData}
                 columnDefs={columnDefs}
