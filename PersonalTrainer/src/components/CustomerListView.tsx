@@ -119,10 +119,7 @@ const CustomerListView = () => {
     };
 
     const handleEditFormSubmit = (updatedCustomer: Customer) => {
-
         const url = updatedCustomer._links.self.href;
-        console.log(url);
-
         fetch(url, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -140,13 +137,6 @@ const CustomerListView = () => {
     };
 
     const handleDelete = (url: string) => {
-        console.log(url);
-
-        if (!url) {
-            console.error("Invalid URL: 'url' is empty or undefined");
-            return;
-        }
-
         if (window.confirm("Are you sure you want to delete this customer?")) {
             fetch(url, {
                 method: "DELETE",

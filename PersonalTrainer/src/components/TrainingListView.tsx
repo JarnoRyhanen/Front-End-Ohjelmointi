@@ -15,8 +15,34 @@ const TrainingListView = () => {
         date: "",
         duration: 0,
         activity: "",
-        customer: "" ,
+        customer: "",
     });
+
+    const [columnDefs] = useState<ColDef<Training>[]>([
+        { field: "customer.firstname", headerName: "Customer First Name" },
+        { field: "customer.lastname", headerName: "Customer Last Name" },
+        {
+            field: "date",
+            headerName: "Date",
+            valueFormatter: (params) => {
+                return dayjs(params.value).format("DD.MM.YYYY HH:mm");
+            },
+        },
+        { field: "duration", headerName: "Duration (min)" },
+        { field: "activity", headerName: "Activity" },
+        {
+            field: "id",
+            headerName: "DELETE",
+            cellRenderer: (params: {value: string}) => (
+                <button
+                    className="text-red-500 font-semibold"
+                    onClick={() => handleDelete(params.value)}
+                >
+                    Delete
+                </button>
+            ),
+        },
+    ]);
 
     const fetchData = () => {
         fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings")
@@ -41,13 +67,11 @@ const TrainingListView = () => {
             date: "",
             duration: 0,
             activity: "",
-            customer: "" ,
+            customer: "",
         });
     };
 
     const handleFormSubmit = (e: React.FormEvent) => {
-        console.log(newTraining);
-        
         e.preventDefault();
         fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings", {
             method: "POST",
@@ -65,19 +89,21 @@ const TrainingListView = () => {
             .catch((error) => console.error(error));
     };
 
-    const [columnDefs] = useState<ColDef<Training>[]>([
-        { field: "customer.firstname", headerName: "Customer First Name" },
-        { field: "customer.lastname", headerName: "Customer Last Name" },
-        {
-            field: "date",
-            headerName: "Date",
-            valueFormatter: (params) => {
-                return dayjs(params.value).format("DD.MM.YYYY HH:mm");
-            },
-        },
-        { field: "duration", headerName: "Duration (min)" },
-        { field: "activity", headerName: "Activity" },
-    ]);
+    const handleDelete = (trainingId: string) => {
+        if (window.confirm("Are you sure you want to delete this training entry?")) {
+            fetch(`https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings/${trainingId}`, {
+                method: "DELETE",
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        fetchData();
+                    } else {
+                        console.error("Failed to delete training entry");
+                    }
+                })
+                .catch((error) => console.error(error));
+        }
+    }
 
     return (
         <div className="p-2 m-3 shadow h-screen">
