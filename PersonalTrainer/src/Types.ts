@@ -13,6 +13,13 @@ export type Customer = {
     };
 };
 
+export type AddCustomerProps = {
+    newCustomer: Customer;
+    setNewCustomer: React.Dispatch<React.SetStateAction<Customer>>;
+    handleFormClose: () => void;
+    handleFormSubmit: (e: React.FormEvent) => void;
+}
+
 export type Training = {
     id: string;
     date: string;
