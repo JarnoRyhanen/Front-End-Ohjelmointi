@@ -4,12 +4,15 @@ import { ColDef } from "ag-grid-community";
 import { useEffect, useState } from "react";
 import { Customer } from "../Types";
 import AddCustomer from "./AddCustomer";
+import EditCustomer from "./EditCustomer";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const CustomerListView = () => {
     const [customerData, setCustomerData] = useState<Customer[]>([]);
     const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
+    const [showEditCustomerForm, setShowEditCustomerForm] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
     const [newCustomer, setNewCustomer] = useState<Customer>({
         firstname: "",
@@ -19,7 +22,7 @@ const CustomerListView = () => {
         city: "",
         email: "",
         phone: "",
-        _links: { self: "", customer: "", trainings: "" },
+        _links: { self: { href: "" }, customer: { href: "" }, trainings: { href: "" } },
     });
 
     const fetchData = () => {
@@ -44,19 +47,38 @@ const CustomerListView = () => {
         { field: "email", headerName: "Email" },
         { field: "phone", headerName: "Phone" },
         {
-            field: "_links.self", headerName: "DELETE",
-            cellRenderer: (params: { value: { href: string }; }) => (
-                <button className="text-red-500 font-semibold"
+            field: "_links.self",
+            headerName: "EDIT",
+            cellRenderer: (params: { data: Customer }) => (
+                <button
+                    className="text-blue-400 font-semibold"
+                    onClick={() => handleEditCustomer(params.data)}
+                >
+                    EDIT
+                </button>
+            ),
+        },
+        {
+            field: "_links.self",
+            headerName: "DELETE",
+            cellRenderer: (params: { value: { href: string } }) => (
+                <button
+                    className="text-red-500 font-semibold"
                     onClick={() => handleDelete(params.value.href)}
                 >
                     Delete
                 </button>
-            )
+            ),
         },
     ]);
 
     const handleAddCustomer = () => {
         setShowAddCustomerForm(true);
+    };
+
+    const handleEditCustomer = (customer: Customer) => {
+        setSelectedCustomer(customer);
+        setShowEditCustomerForm(true);
     };
 
     const handleFormClose = () => {
@@ -69,8 +91,13 @@ const CustomerListView = () => {
             city: "",
             email: "",
             phone: "",
-            _links: { self: "", customer: "", trainings: "" },
+            _links: { self: { href: "" }, customer: { href: "" }, trainings: { href: "" } },
         });
+    };
+
+    const handleEditFormClose = () => {
+        setShowEditCustomerForm(false);
+        setSelectedCustomer(null);
     };
 
     const handleFormSubmit = (e: React.FormEvent) => {
@@ -86,6 +113,27 @@ const CustomerListView = () => {
                     handleFormClose();
                 } else {
                     console.error("Failed to add customer");
+                }
+            })
+            .catch((error) => console.error(error));
+    };
+
+    const handleEditFormSubmit = (updatedCustomer: Customer) => {
+
+        const url = updatedCustomer._links.self.href;
+        console.log(url);
+
+        fetch(url, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedCustomer),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    fetchData();
+                    handleEditFormClose();
+                } else {
+                    console.error("Failed to edit customer");
                 }
             })
             .catch((error) => console.error(error));
@@ -125,12 +173,22 @@ const CustomerListView = () => {
                 </button>
             </div>
 
-            {showAddCustomerForm && <AddCustomer
+            {showAddCustomerForm && (<AddCustomer
                 newCustomer={newCustomer}
                 setNewCustomer={setNewCustomer}
                 handleFormClose={handleFormClose}
                 handleFormSubmit={handleFormSubmit}
-            />}
+            />)}
+
+            {showEditCustomerForm && selectedCustomer && (
+                <EditCustomer
+                    updatedCustomer={selectedCustomer}
+                    setUpdatedCustomer={setSelectedCustomer}
+                    handleFormClose={handleEditFormClose}
+                    handleFormSubmit={handleEditFormSubmit}
+                />
+            )}
+
             <AgGridReact className="z-10"
                 rowData={customerData}
                 columnDefs={columnDefs}

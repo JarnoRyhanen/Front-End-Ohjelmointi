@@ -1,3 +1,4 @@
+
 export type Customer = {
     firstname: string;
     lastname: string;
@@ -7,9 +8,15 @@ export type Customer = {
     email: string;
     phone: string;
     _links: {
-        self: string;
-        customer: string;
-        trainings: string;
+        self: {
+            href: string,
+        }
+        customer: {
+            href: string,
+        }
+        trainings: {
+            href: string,
+        }
     };
 };
 
@@ -18,6 +25,13 @@ export type AddCustomerProps = {
     setNewCustomer: React.Dispatch<React.SetStateAction<Customer>>;
     handleFormClose: () => void;
     handleFormSubmit: (e: React.FormEvent) => void;
+}
+
+export type EditCustomerProps = {
+    updatedCustomer: Customer;
+    setUpdatedCustomer: React.Dispatch<React.SetStateAction<Customer | null>>;
+    handleFormClose: () => void;
+    handleFormSubmit: (updatedCustomer: Customer) => void;
 }
 
 export type Training = {
