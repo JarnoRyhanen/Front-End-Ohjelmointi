@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from './components/Header'
 import CustomerListView from './components/CustomerListView'
 import TrainingListView from './components/TrainingListView'
+import Calendar from './components/Calendar';
 
 function App() {
 
@@ -28,6 +29,12 @@ function App() {
           >
             Training
           </TabsTrigger>
+          <TabsTrigger
+            value="calendar"
+            className={classes}
+          >
+            Calendar
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="customer">
@@ -35,6 +42,9 @@ function App() {
         </TabsContent>
         <TabsContent value="training">
           <TrainingListView />
+        </TabsContent>
+        <TabsContent value="calendar">
+          <Calendar />
         </TabsContent>
       </Tabs>
 

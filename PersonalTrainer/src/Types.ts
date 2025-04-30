@@ -60,3 +60,9 @@ export type AddTrainingProps = {
     handleFormClose: () => void;
     handleFormSubmit: (e: React.FormEvent) => void;
 }
+
+export type CalendarEvent = {
+    title: string;
+    start: string;
+    end: string;
+};
