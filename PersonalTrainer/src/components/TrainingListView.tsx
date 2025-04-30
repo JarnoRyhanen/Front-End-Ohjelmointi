@@ -25,7 +25,7 @@ const TrainingListView = () => {
             field: "date",
             headerName: "Date",
             valueFormatter: (params) => {
-                return dayjs(params.value).format("DD.MM.YYYY HH:mm");
+                return dayjs(params.value).subtract(3, "hour").format("DD.MM.YYYY HH:mm"); //
             },
         },
         { field: "duration", headerName: "Duration (min)" },
@@ -33,7 +33,7 @@ const TrainingListView = () => {
         {
             field: "id",
             headerName: "DELETE",
-            cellRenderer: (params: {value: string}) => (
+            cellRenderer: (params: { value: string }) => (
                 <button
                     className="text-red-500 font-semibold"
                     onClick={() => handleDelete(params.value)}
@@ -48,7 +48,6 @@ const TrainingListView = () => {
         fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings")
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 setTrainingData(data);
             });
     };

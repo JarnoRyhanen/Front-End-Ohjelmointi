@@ -15,7 +15,7 @@ const Calendar = () => {
             .then((response) => response.json())
             .then((data) => {
                 const formattedEvents = data.map((training: Training) => {
-                    const start = dayjs(training.date);
+                    const start = dayjs(training.date).subtract(3, "hour");
                     const end = start.add(training.duration, 'minute');
 
                     return {
