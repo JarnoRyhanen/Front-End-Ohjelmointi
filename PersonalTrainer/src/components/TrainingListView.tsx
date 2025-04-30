@@ -45,7 +45,7 @@ const TrainingListView = () => {
     ]);
 
     const fetchData = () => {
-        fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings")
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/gettrainings`)
             .then((response) => response.json())
             .then((data) => {
                 setTrainingData(data);
@@ -72,7 +72,7 @@ const TrainingListView = () => {
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings", {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/trainings`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newTraining),
@@ -90,7 +90,7 @@ const TrainingListView = () => {
 
     const handleDelete = (trainingId: string) => {
         if (window.confirm("Are you sure you want to delete this training entry?")) {
-            fetch(`https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings/${trainingId}`, {
+            fetch(`${import.meta.env.VITE_BACKEND_URL}/trainings/${trainingId}`, {
                 method: "DELETE",
             })
                 .then((response) => {

@@ -27,7 +27,7 @@ const CustomerListView = () => {
     });
 
     const fetchData = () => {
-        fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/customers")
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/customers`)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data._embedded.customers);
@@ -103,7 +103,7 @@ const CustomerListView = () => {
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/customers", {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/customers`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newCustomer),

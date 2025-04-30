@@ -11,7 +11,7 @@ const Calendar = () => {
     const [events, setEvents] = useState<CalendarEvent[]>([]);
 
     const fetchTrainings = () => {
-        fetch('https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings')
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/gettrainings`)
             .then((response) => response.json())
             .then((data) => {
                 const formattedEvents = data.map((training: Training) => {
