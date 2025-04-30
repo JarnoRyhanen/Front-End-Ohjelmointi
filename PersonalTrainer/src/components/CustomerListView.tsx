@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Customer } from "../Types";
 import AddCustomer from "./AddCustomer";
 import EditCustomer from "./EditCustomer";
+import { CSVExport } from "../CSVExport";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -152,14 +153,26 @@ const CustomerListView = () => {
         }
     }
 
+    const handleCSVExport = () => {
+        if (window.confirm("Export data as CSV?")) {
+            CSVExport(customerData);
+        }
+    }
+
     return (
         <div className="p-2 m-3 shadow h-screen">
-            <div className="mb-4">
+            <div className="mb-4 flex gap-8">
                 <button
                     onClick={handleAddCustomer}
                     className="bg-[#4CAF50] text-white px-4 py-2 rounded shadow hover:bg-[#45a049] transition"
                 >
                     Add Customer
+                </button>
+                <button
+                    onClick={handleCSVExport}
+                    className="bg-[#4CAF50] text-white px-4 py-2 rounded shadow hover:bg-[#45a049] transition"
+                >
+                    Export
                 </button>
             </div>
 
