@@ -4,6 +4,7 @@ import Header from './components/Header'
 import CustomerListView from './components/CustomerListView'
 import TrainingListView from './components/TrainingListView'
 import Calendar from './components/Calendar';
+import { Chart } from './components/BarChart';
 
 function App() {
 
@@ -35,6 +36,13 @@ function App() {
           >
             Calendar
           </TabsTrigger>
+
+          <TabsTrigger
+            value="chart"
+            className={classes}
+          >
+            Chart
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="customer">
@@ -45,6 +53,9 @@ function App() {
         </TabsContent>
         <TabsContent value="calendar">
           <Calendar />
+        </TabsContent>
+        <TabsContent value="chart">
+          <Chart />
         </TabsContent>
       </Tabs>
 
